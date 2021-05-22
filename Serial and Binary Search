@@ -1,0 +1,195 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define LIMIT 30000
+#include <time.h>
+
+int c=0;
+
+//function of the functionality of the serial search
+int serial search(int *, int,int);
+int serial search(int *a,int b,int  n) 
+{
+    int sum=0, sum2=0;
+    clock_t start, end;
+    start=clock();
+    srand((unsigned)time(NULL));   //initialize random number
+    
+    int i = 0;
+    for(int j=0;j<1000;j++)//1000 loops
+    {
+    for(i=0;i<n;i++)
+    {
+        sum++;
+       
+        if(*(a+i)==b) //item control if exist inside the table
+        {
+       
+            c=1;
+            break;
+        }
+        if(c==1) //if exist i use the sum2 for the success rate
+        {
+            sum2++;
+        }
+
+        }
+    }
+
+    end=clock();
+
+    double elapsed = ((double) (end - start)) / CLOCKS_PER_SEC; //calculation of the search time
+    printf("Average search time:%f",elapsed/1000);
+    printf("\n");
+
+    sum=sum/1000;
+    printf("The average of comparisons is:%d",sum);
+    printf("\n");
+
+    printf("The percentage of successful searches is :%d",sum2/1000000);
+    printf("%%\n");
+
+    return i;
+    
+    
+}
+
+//Function of the binary search
+
+int binary search(int *,int,int);
+
+int binary search(int *a,int b,int n)
+{
+    
+    clock_t start, end;
+    start=clock();
+
+    int sum=0, sum2=0;
+    start=clock();
+
+        srand((unsigned)time(NULL));   //initialize random number
+
+    int l,u,mid=0;
+    l=0,u=n-1;
+    c=0;
+    for(l=0;l<=u;l++) //loops until the l to be smaller than u.
+    {
+       
+        mid=(l+u)/2; //I find the medium number
+        
+        for(int j=0;j<1000;j++) //1000 loops
+        {
+        if(b==a[mid]) //if the element exist the medium of the table then we found the item we are looking for
+        {
+            c=1;
+            break;
+        }
+        else if(b<a[mid]) //else i compare the element with the previous and next
+        {
+            sum++;
+            u=mid-1;
+        }
+        else
+        {
+            sum++;
+            l=mid+1;
+        }
+        if(c==1) //
+        {
+            sum2++;
+        }
+        }
+        
+    }
+    end=clock();
+
+    double elapsed = ((double) (end - start)) / CLOCKS_PER_SEC; //i save the duration of the search
+    
+    printf("The search lasted :%f",elapsed);
+    printf("\n");
+
+    printf("The average of comparisons is:%d",sum/1000);
+    printf("\n");
+
+    printf("The percentage of successful searches is :%d",sum2/100);
+    printf("%%\n");
+    
+    return mid;
+
+
+}
+
+int main()
+{
+    int *a,i,n,m;
+    int choice;
+    
+    
+    do
+    {
+        //create a menu
+        printf("Menu\n\n");
+        printf("1. Serial Search\n");
+        printf("2. Binary Search\n");
+        printf("3. Exit\n");
+        scanf("%d",&choice);
+        
+        switch (choice)
+        {
+            case 1:
+                
+                printf("Type the size of the table(5000,15000,.....): ");
+                scanf("%d",&n);
+                a=(int*)malloc(n*sizeof(int)); //dynamic memory allocation
+                
+                for(i=0;i<n;i++)
+                {
+                    m=1+rand()%30000; //I generate random numbers and place them in the table
+                    printf("%d ",m);
+                    a[i]=m;
+                }
+                
+                printf("\n type the element for the search:");
+                scanf("%d",&m);
+                
+                i=serial search (a,m,n); //call the function of the serial search
+                
+                if(c==0)
+                    printf("the numder does not exist in the list\n");
+                else
+                    printf("the number of potition for this element is: %d\n",i);
+
+                break;
+              case 2:
+
+                //binary search
+
+                printf("Type the size of the table (5000,15000,.....): ");
+                scanf("%d",&n);
+                a=(int*)malloc(n*sizeof(int));
+                
+                for(i=0;i<n;i++)
+                {
+                    m=1+rand()%3;
+                     a[i]=a[i-1]+1+rand()%3; //I fill the table with the following sequence
+                    printf("%d ",a[i]);
+
+                }
+                
+                printf("\n type the element for the search:");
+                scanf("%d",&m);
+                
+                i=binary search(a,m,n); //call the function
+                
+                if(c==0)
+                    printf("the numder does not exist in the list\n");
+                else
+                    printf("the number of potition for this element is: %d\n",i);
+                break;
+               case 3: printf("Goodbye\n"); //exit for the menu
+                break;
+            default: printf("Wrong Choice. Enter again\n"); //if the user type wrong choice
+                break;
+        } 
+        
+    } while (choice != 3);
+    }
