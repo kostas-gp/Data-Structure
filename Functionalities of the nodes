@@ -1,0 +1,345 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+//creation of the node structure with the apropriate types of elements that needed for the implementation as well as their initialization
+struct node {
+    int data; 
+    int key;
+    struct node *state;
+    struct node *next;
+    struct node *prev;
+    struct node *temp;
+    struct node *current;
+    struct node *number;
+    struct node *node;
+ 
+
+};
+
+struct node *head = NULL;
+struct node *current = NULL;
+struct node *tail = NULL;
+struct node *state = NULL;
+struct node *temp= NULL;
+struct node *prev=NULL;
+struct node *node=NULL;
+struct node *head_ref = NULL;
+
+
+//display the list
+
+void DisplayList(struct node ** head) {
+    struct node *ptr = *head;
+    printf("\n[ ");
+    
+    //start at the top of the list the search
+    while(ptr != NULL) {
+        printf("(%d,%d) ",ptr->key,ptr->data);
+        ptr = ptr->next;
+    }
+    
+    printf(" ]");
+}
+
+
+void addNodeDouble(int key, int data) {
+    
+    //create link
+    struct node *link = (struct node*) malloc(sizeof(struct node));
+    
+    link->key = key;
+    link->data = data;
+    
+    //place the link on the old first node
+    link->next = head;
+    
+    //save the link of the new node
+    head = link;
+}
+
+void appendList(int num,struct node ** head)
+{
+    struct node *temp,*right;
+    temp= (struct node *)malloc(sizeof(struct node));
+    temp->data=num;
+    right=(struct node *)head;
+    while(right->next != NULL)
+        right=right->next;
+    right->next =temp;
+    right=temp;
+    right->next=NULL;
+}
+
+//Function for the insert a new node at the beginning or at the end of the list
+void addNodeSingle(struct node **head, int num, int position) 
+{
+    if (*head == NULL) //check if the head is NULL
+    {
+        struct node *current;
+        current = (struct node*) malloc (1*sizeof(struct node));
+        current -> number = num;
+        current -> next = NULL; //if the head is null then plase the node to the current value and initialize the list
+        *head = current;
+    }
+    
+    else
+    {
+        if (position == 0)
+        {
+            struct node *current;
+            current = (struct node*) malloc (1*sizeof(struct node));
+            current -> number = num;
+            current -> next = *head; //place in the beggining
+            *head = current;
+        }
+        
+        if (position==1)
+        {
+            struct node *current, *temp;
+            current = (struct node*) malloc (1*sizeof(struct node));
+            current -> number = num;
+            temp = *head;
+            while (temp -> next != NULL)
+                temp = temp -> next; //place in the end
+            
+            temp -> next = current;
+            current -> next = NULL;
+        }
+    }
+}
+
+//function for the delete the last
+struct node* deleteLast() {
+    //save the link in the last node
+    struct node *tempLink = tail;
+    
+    //check if exist only one link
+    if(head->next == NULL) {
+        head = NULL;
+    } else {
+        tail->prev->next = NULL;
+    }
+    
+    tail = tail->prev;
+    return tempLink; //return the link that deleted
+}
+
+
+//check if the list is empty
+bool isEmpty() {
+    return head == NULL;
+}
+
+int length() {
+    int length = 0;
+    struct node *current;
+    
+    for(current = head; current != NULL; current = current->next) {
+        length++;
+    }
+    return length;
+}
+
+
+//function for the place of the node
+void addDescending() {
+    int i, j, k, tempKey, tempData;
+    struct node *current;
+    struct node *next;
+
+    //placing the node in descending order
+    int size = length();
+    k = size ;
+    
+    for ( i = 0 ; i < size - 1 ; i++, k-- ) {
+        current = head;
+        next = head->next;
+        
+        for ( j = 1 ; j < k ; j++ ) {
+            
+            if ( current->data > next->data ) {
+                tempData = current->data;
+                current->data = next->data;
+                next->data = tempData;
+                
+                tempKey = current->key;
+                current->key = next->key;
+                next->key = tempKey;
+            }
+            
+            current = current->next;
+            next = next->next;
+        }
+    }
+}
+
+//Display the element with the reverse
+void ReversedisplayList(struct node** head,struct node **tail) {
+    struct node* prev   = NULL;
+    struct node* current = *head;
+    struct node* next;
+    
+    while (current != NULL) {
+        next  = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    printf("%d",current);
+    
+   
+}
+
+//Delete of the node
+void deleteNode(struct node * node, struct node ** head) {
+    if (strcmp(node->state, ((*head)->state) == 0)) {
+        struct node * temp = *head;
+        *head = (*head)->next;
+        free(temp);
+        return;
+    }
+        
+        struct node * current = (*head)->next;
+        struct node * prev = *head;
+        while (current != NULL && prev != NULL) {
+            if (strcmp(node->state, current->state) == 0) {
+                struct node *temp = current;
+                prev->next = current->next;
+                free(temp);
+                return;
+            }
+            prev = current;
+            current = current->next;
+        }
+        return;
+        }
+
+
+//count the node of the list
+int countList(struct node ** head)
+{
+    struct node *temp = *head;
+    int length = 0;
+    while(temp!=NULL) 
+    {
+        length++;
+        temp=temp->next;
+    }
+    return(length);
+}
+
+void swapElements1(struct node **head)
+{
+ 
+    if (!*head || !(*head)->next)
+        return;
+    
+    struct node **pp = &(*head)->next; // start with the second node of the list
+
+    // access to the all nodes
+    // save the null node to the pp  that is the direction of the last node
+    while (*pp && (*pp)->next)
+        pp = &(*pp)->next;
+    
+    // change the head with pp
+    struct node *tmp = *head;
+    *head = *pp;
+    *pp = tmp;
+    
+    // save to the new pointer
+    (*head)->next = (*pp)->next;
+    
+    (*pp)->next = NULL;
+}
+
+//swapelements2
+void swapElements2(struct node **head_ref,struct node *tail)
+{
+    
+    if (*head_ref == NULL || (*head_ref)->next == NULL)
+        return;
+
+    //place value to the last and the pre last node
+    struct node *secLast = NULL;
+    struct node *last = *head_ref;
+    
+    while (last->next != NULL)
+    {
+        secLast = last;
+        last = last->next;
+    }
+    
+    //set the pre-last node the null
+    secLast->next = NULL;
+    last->next = *head_ref;
+    
+    //change the head node and place at the end of the list
+    *head_ref = last;
+}
+
+
+int main() {
+    
+    int thesi;
+    int num;
+    int key,data;
+    
+    while(!isEmpty()) {
+        struct node *node;
+        struct node *temp = deleteFirst();
+        printf("\nDeleted value:");
+        printf("(%d,%d) ",temp->key,temp->data);
+    }
+    
+    int selection;
+    do
+    {
+        
+        printf("Enter your choice: ");
+        scanf("%d",&selection);
+        switch(selection)
+        {//create a menu
+            case 1:
+                addNodeSingle(&head,num,thesi);
+                break;
+            case 2:
+                addDescending();
+                break;
+            case 3:
+                countList(&head);
+                break;
+            case 4:
+                DisplayList(&head);
+                break;
+            case 5:
+                deleteLast();
+                break;
+            case 6:
+                deleteNode(&node,&head);
+                break;
+            case 7:
+                appendList(num,&head);
+                break;
+            case 8:
+                addNodeDouble(key,data);
+                break;
+            case 9:
+                ReversedisplayList(&head,&tail);
+                break;
+            case 10:
+                swapElements1(&head);
+                break;
+            case 11:
+                swapElements2(&head_ref,tail);
+                break;
+            case 12:
+                swapElements1(&head);
+                break;
+            default:
+                printf("exit\n");
+        }
+    }while(epilogi != 0);
+    return 0;
+}
