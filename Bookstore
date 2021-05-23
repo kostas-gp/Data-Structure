@@ -1,0 +1,198 @@
+#include<stddef.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+//create a node for the book
+struct book
+{
+    struct book *next;
+    struct book *prev;
+    struct book *state;
+    struct book *node; //initialize of the node
+    char title;
+    char type;
+    char author;
+    char description;
+    int popularity;   
+};
+
+void insertSpecs(struct book **head,struct book **tail){
+    struct book *new_book=(struct book *)malloc(1*sizeof(struct book));
+    struct book *tmp;
+ 
+//check if the list is empty and then save the book with the apropriate way
+    if(*head==NULL) 
+    {
+        *head=new_book;
+        *tail=new_book;
+        tmp=*tail;
+        new_book->next=NULL;
+        new_book->prev=NULL;
+    }
+    else{
+        new_book->next=NULL;
+        new_book->prev=tmp;
+        *tail=new_book;
+        tmp=*tail;
+    }
+    
+    printf("Type the title of the book:\n"); //kataxwrisi twn xaraktiristikwn
+    gets(&new_book->title);
+    
+    printf("Type the author of the book:\n");
+    gets(&new_book->author);
+    
+    printf("Type the type of the book:\n");
+    gets(&new_book->type);
+    
+    printf("Type the descriptionof the book:\n");
+    gets(&new_book->description);
+    
+    new_book->popularity=0;
+    
+}
+
+//display the list
+void printList() {
+    struct book *new_book = (struct book *)malloc(1*sizeof(struct book));
+    printf("\n[ ");  //display the list with the title of the book and the name of the author
+    
+    //start from the beginning
+    while(new_book != NULL) {
+        printf("(%d,%d) ",new_book->title,new_book->author);
+        new_book = new_book->next;
+    }
+    
+    printf(" ]\n");
+}
+
+//function for the search
+void search(struct book *head,char n)
+{
+    printf("Type the title for the searching\n");
+    scanf("%c",&n);
+    int popularity=0;
+
+     //search book based on the title
+    while(head != NULL)
+    {
+        if (strcmp(&head->title,&n)==0)
+        {
+            
+            printf("Found it\n");
+            popularity=popularity+0,5; //increase in popularity for classification
+            
+        }
+        head=head->next;
+    }
+    printf("The title does not exist in the bookstore\n");
+}
+
+/compute the size of the list
+void list_size(struct book *head)
+{
+    int size = 0;
+    while (head) {
+        size++;
+        head = head->next;
+    }
+    printf("The multitude of books is %d\n",size);
+}
+
+//Delete book of the bookstore
+void RemoveNode(struct book **head,struct book **node) {
+    char title;
+    char compare =((*node)->state, (*head)->state);
+    
+    printf("Type the title of the book that you delete it");
+    scanf("%s",&title);
+    
+    if (strcmp(&compare,title == 0)) {
+        struct book * temp = *head;
+        *head = (*head)->next;
+        free(temp);
+        return;
+    }
+
+    //If the book does not exist in the first plase of the list then the function search in the other places
+    struct book * current = (*head)->next;
+    struct book * prev = *head;
+    while (current != NULL && prev != NULL) {
+        if (strcmp((*node)->state, current->state) == 0) {
+            struct book *temp = current;
+            prev->next = current->next;
+            free(temp);
+            return;
+        }
+        prev = current;
+        current = current->next;
+    }
+    return;
+}
+
+//check the popularity of the book
+void max(struct book **head)
+{
+    struct book *r;
+    int max=0;
+    r=*head;
+    while((r->next)!=NULL)
+    {
+        max=r->popularity;
+        r=r->next;
+        if((r->popularity)>max) 
+        {
+            max=r->popularity;
+        }
+    }
+    printf("The max is %d",max);
+    printf("\n");
+}
+
+int main()
+{
+    struct book *head = NULL;
+    struct book *tail;
+    struct book *node;
+    char n;
+    int selection;
+    
+do
+{
+
+    printf("Enter your choice: ");
+    scanf("%d",&selection);
+    switch(selection)
+    {
+        case 1:
+            insertSpecs(&head,&tail);
+            break;
+        case 2:
+            printList();
+            break;
+        case 3:
+            search(head,n);
+            break;
+        case 4:
+            list_size(head);
+            break;
+        case 5:
+            RemoveNode(&head,&node);
+            break;
+        case 6:
+            min(&head);
+            break;
+        case 7:
+            max(&head);
+            break;
+         case 8:
+            printList();
+        default:
+            printf("exit\n");
+    }
+}while(selection != 0);
+return 0;
+}
+
